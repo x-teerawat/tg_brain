@@ -1,105 +1,3 @@
-# from pythainlp.corpus.common import thai_stopwords
-# from pythainlp.tokenize import word_tokenize
-# from fuzzywuzzy import fuzz
-
-# # ข้อความที่ต้องการตรวจสอบ
-# text = "ฉันอยากได้ค่าจาก ystat ช่วยหาให้หน่อยได้ไหม"
-
-# # คำที่ต้องการเปรียบเทียบ
-# second_brain = {'products': ['y-stat', 'graph', 'ภาพ', 'image', 'วัน']}
-
-# # ใช้ pythainlp แบ่งคำในภาษาไทย
-# words = word_tokenize(text, engine='newmm')
-
-# # ลบ stopwords ที่มาจาก pythainlp
-# filtered_words = [word for word in words if word not in thai_stopwords()]
-
-# # รวมคำหลังจากลบ stopwords
-# filtered_text = ' '.join(filtered_words)
-
-# # ฟังก์ชันเปรียบเทียบความคล้ายคลึงกัน
-# def find_similarity(text, keywords):
-#     similarities = [(keyword, fuzz.ratio(text.lower(), keyword.lower())) for keyword in keywords]
-#     return similarities
-
-# # เรียกใช้ฟังก์ชันและแสดงผลลัพธ์
-# similarity_results = find_similarity(filtered_text, second_brain['products'])
-
-# print("ความคล้ายคลึงกันของแต่ละคำในรายการ:")
-# for keyword, similarity in similarity_results:
-#     print(f"{keyword}: {similarity}%")
-
-
-# from transformers import AutoTokenizer, AutoModel
-# import torch
-# from sklearn.metrics.pairwise import cosine_similarity
-# import numpy as np
-
-# # โหลด tokenizer และ model สำหรับ LaBSE
-# tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/LaBSE')
-# model = AutoModel.from_pretrained('sentence-transformers/LaBSE')
-
-# # ฟังก์ชันสำหรับการแปลงประโยคเป็นเวคเตอร์
-# def get_sentence_embedding(sentence):
-#     inputs = tokenizer(sentence, return_tensors='pt', padding=True, truncation=True)
-#     with torch.no_grad():
-#         embeddings = model(**inputs).pooler_output
-#     return embeddings
-
-# # ประโยคตัวอย่าง (ภาษาไทยและภาษาอังกฤษ)
-# sentence1 = "สวัสดีครับ"
-# sentence2 = "Hello"
-
-# # แปลงประโยคเป็นเวคเตอร์
-# embedding1 = get_sentence_embedding(sentence1)
-# embedding2 = get_sentence_embedding(sentence2)
-
-# # คำนวณความคล้ายคลึงโดยใช้ cosine similarity
-# cosine_sim = cosine_similarity(embedding1.numpy(), embedding2.numpy())
-
-# print(f"Cosine similarity: {cosine_sim[0][0]}")
-
-
-
-
-# from transformers import AutoTokenizer, AutoModel
-# import torch
-# from sklearn.metrics.pairwise import cosine_similarity
-# import numpy as np
-
-# # โหลด tokenizer และ model สำหรับ LaBSE
-# tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/LaBSE')
-# model = AutoModel.from_pretrained('sentence-transformers/LaBSE')
-
-# # ฟังก์ชันสำหรับการแปลงประโยคเป็นเวคเตอร์
-# def get_sentence_embedding(sentence):
-#     inputs = tokenizer(sentence, return_tensors='pt', padding=True, truncation=True)
-#     with torch.no_grad():
-#         embeddings = model(**inputs).pooler_output
-#     return embeddings
-
-# # ประโยคตัวอย่าง (ภาษาไทยและภาษาอังกฤษ)
-# sentence1 = "ฉันอยากได้รูปแสดงกราฟ"
-
-# # ข้อมูลใน second_brain
-# second_brain = {'products': ['y-stat', 'graph', 'ภาพ', 'image']}
-
-# # แปลงประโยค sentence1 เป็นเวคเตอร์
-# embedding1 = get_sentence_embedding(sentence1).numpy()
-
-# # คำนวณความคล้ายคลึงกับทุกประโยคใน second_brain['products']
-# similarities = {}
-# for product in second_brain['products']:
-#     embedding_product = get_sentence_embedding(product).numpy()
-#     cosine_sim = cosine_similarity(embedding1, embedding_product)
-#     similarities[product] = cosine_sim[0][0]
-
-# # แสดงผลลัพธ์
-# for product, sim in similarities.items():
-#     print(f"Cosine similarity between '{sentence1}' and '{product}': {sim}")
-
-
-
 from pythainlp.corpus.common import thai_stopwords
 from pythainlp.tokenize import word_tokenize
 from fuzzywuzzy import fuzz
@@ -109,6 +7,7 @@ synonyms = {
     'รูปภาพ': ['ภาพ', 'image', 'รูป', 'ภาพถ่าย'],
     'วันที่': ['วัน', 'วันที่', 'date'],
     'กราฟ': ['graph', 'Graph', 'กราฟ'],
+    'y-stat': ['ystat', 'y', 'staty', 'stat-y']
     # Add more synonyms as needed
 }
 
@@ -123,11 +22,11 @@ stock_names_symbols = {
 
 # Initialize second_brain and input1
 second_brain = {'products': ['y-stat', 'รูปภาพ', 'กราฟ', 'วันที่']}
-input1 = 'ฉันอยากได้รูปภาพแสดง graph ค่าy AMD ของวันที่ 20 เดือน7 2023'
-input2 = 'ขอรูปภาพค่า y วันที่ 21 เดือน 7 2023 AMD'
+input1 = 'ฉันอยากได้รูปภาพแสดง graph ค่าy AMD ของวันที่ 20 เดือน7 2024'
+input2 = 'ขอรูปภาพค่า y วันที่ 21 เดือน 7 2024 AMD'
 input3 = 'ขอรูปภาพ Teerawat ทำท่าตัว y'
 input4 = 'ขอกราฟ AMD วันนี้'
-input5 = 'ขอภาพรถ 7 คัน ที่เรียงกันเป็นรูปตัว y ที่หน้าบ. AMD ในปี 2023'
+input5 = 'ขอภาพรถ 7 คัน ที่เรียงกันเป็นรูปตัว y ที่หน้าบ. AMD ในปี 2024'
 
 # Tokenize words and remove stopwords
 stopwords = thai_stopwords()
@@ -194,3 +93,67 @@ if threshold_pct > 50:
     print('True')
 else:
     print('False')
+    
+import re
+from pythainlp.tokenize import word_tokenize
+
+# List of Thai month names
+thai_months = [
+    "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+    "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+]
+
+# Function to extract and format date from input
+def extract_dates(input_text):
+    # Tokenize the input text
+    tokens = word_tokenize(input_text)
+
+    # Regular expressions for various date formats
+    date_patterns = [
+        r'(\d{1,2})[-/](\d{1,2})[-/](\d{4})',  # DD-MM-YYYY or DD/MM/YYYY
+        r'(\d{1,2})\s*เดือน\s*(\d{1,2}|\w+)\s*(\d{4})',  # DD เดือน MM YYYY
+        r'(\d{1,2})\s*(\d{1,2}|\w+)\s*(\d{4})'  # DD MM YYYY (with or without Thai month names)
+    ]
+
+    # Container for formatted dates
+    formatted_dates = []
+
+    for pattern in date_patterns:
+        for match in re.finditer(pattern, input_text):
+            day, month, year = match.groups()
+
+            # Convert Thai month names to numbers if needed
+            if month.isdigit():
+                month = int(month)
+            else:
+                month = thai_months.index(month) + 1 if month in thai_months else None
+
+            if month:
+                formatted_date = f"{int(day):02d}/{int(month):02d}/{year}"
+                formatted_dates.append(formatted_date)
+
+    # Checking for relative dates (e.g., วันนี้, เมื่อวานนี้)
+    relative_dates = {
+        "วันนี้": "today",
+        "เมื่อวานนี้": "yesterday",
+        # More relative dates can be added here
+    }
+
+    for token in tokens:
+        if token in relative_dates:
+            formatted_dates.append(relative_dates[token])
+
+    return formatted_dates
+
+# Example input
+input1 = 'ฉันอยากได้รูปภาพแสดง graph ค่าy AMD ของวันที่ 20 เดือน7 2023'
+input2 = 'ขอรูปภาพค่า y วันที่ 21 เดือน 7 2023 AMD'
+input3 = 'ขอรูปภาพ Teerawat ทำท่าตัว y'
+input4 = 'ขอกราฟ AMD วันนี้'
+input5 = 'ขอภาพรถ 7 คัน ที่เรียงกันเป็นรูปตัว y ที่หน้าบ. AMD ในปี 2023'
+formatted_dates = extract_dates(input1)
+# formatted_dates = extract_dates(input2)
+# formatted_dates = extract_dates(input3)
+# formatted_dates = extract_dates(input4)
+# formatted_dates = extract_dates(input5)
+print(f"Formatted Dates: {formatted_dates}")
